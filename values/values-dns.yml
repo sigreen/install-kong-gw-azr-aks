@@ -1,0 +1,177 @@
+image:
+  repository: kong/kong-gateway
+  tag: "2.7.0.0-alpine"
+
+env:
+  database: postgres
+  admin_api_uri: http://kong-admin.CHANGEME.com
+  admin_gui_url: http://kong-manager.CHANGEME.com
+  portal_api_url: http://kong-portal-api.CHANGEME.com
+  portal_gui_host: kong-portal.CHANGEME.com
+  portal_gui_protocol: http
+  ## Information needed for sessions (RBAC in Manager and/or Dev Portal session)
+  portal_session_conf:
+    valueFrom:
+      secretKeyRef:
+        name: kong-session-config
+        key: portal_session_conf
+  password:
+   valueFrom:
+     secretKeyRef:
+        name: kong-enterprise-superuser-password
+        key: password
+  pg_user: kong
+  pg_database: kong
+  pg_port: 5432
+  pg_password: kong
+  #  valueFrom:
+  #    secretKeyRef:
+  #      name: kong-enterprise-postgres-password
+  #      key: postgresql-password
+
+admin:
+  enabled: true
+  type: NodePort
+  annotations: []
+  http:
+    enabled: true
+  tls:
+    enabled: false
+  ingress:
+    enabled: true
+#    tls: kong-admin-CHANGE-ME-com
+    hostname: kong-admin.CHANGEME.com
+    annotations:
+      kubernetes.io/ingress.class: "kong"
+#      cert-manager.io/cluster-issuer: letsencrypt-prod
+#      # https://docs.konghq.com/kubernetes-ingress-controller/latest/guides/configuring-https-redirect/#setup-https-redirect
+#      konghq.com/protocols: "https"
+#      konghq.com/https-redirect-status-code: "301"
+    path: /
+
+proxy:
+  enabled: true
+  type: LoadBalancer
+  annotations: []
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+    parameters: []
+  tls:
+    enabled: true
+    servicePort: 443
+    containerPort: 8443
+    parameters: []
+  stream: {}
+  ingress:
+    enabled: false
+    annotations: {}
+    path: /
+  externalIPs: []
+
+enterprise:
+  enabled: true
+  license_secret: kong-enterprise-license
+  vitals:
+    enabled: true
+  portal:
+    enabled: true
+  rbac:
+    enabled: true
+    admin_gui_auth: basic-auth
+    session_conf_secret: kong-session-config
+    admin_gui_auth_conf_secret: admin_gui_session_conf
+  smtp:
+    enabled: false
+
+manager:
+  enabled: true
+  type: NodePort
+  annotations: []
+  http:
+    enabled: true
+  tls:
+    enabled: false
+  ingress:
+    enabled: true
+#    tls: kong-manager-CHANGE-ME-com
+    hostname: kong-manager.CHANGEME.com
+    annotations:
+      kubernetes.io/ingress.class: "kong"
+#      cert-manager.io/cluster-issuer: letsencrypt-prod
+      # https://docs.konghq.com/kubernetes-ingress-controller/latest/guides/configuring-https-redirect/#setup-https-redirect
+#      konghq.com/protocols: "https"
+#      konghq.com/https-redirect-status-code: "301"
+    path: /
+
+portal:
+  enabled: true
+  type: NodePort
+  annotations: []
+  http:
+    enabled: true
+    servicePort: 8003
+    containerPort: 8003
+    parameters: []
+  tls:
+    enabled: false
+  ingress:
+    enabled: true
+#    tls: kong-portal-CHANGE-ME-com
+    hostname: kong-portal.CHANGEME.com
+    annotations:
+      kubernetes.io/ingress.class: "kong"
+#      cert-manager.io/cluster-issuer: letsencrypt-prod
+      # https://docs.konghq.com/kubernetes-ingress-controller/latest/guides/configuring-https-redirect/#setup-https-redirect
+#      konghq.com/protocols: "https"
+#      konghq.com/https-redirect-status-code: "301"
+    path: /
+  externalIPs: []
+
+portalapi:
+  enabled: true
+  type: NodePort
+  annotations: []
+  http:
+    enabled: true
+    servicePort: 8004
+    containerPort: 8004
+    parameters: []
+  tls:
+    enabled: false
+  ingress:
+    enabled: true
+#    tls: kong-portal-api-CHANGE-ME-com
+    hostname: kong-portal-api.CHANGEME.com
+    annotations:
+      kubernetes.io/ingress.class: "kong"
+#      cert-manager.io/cluster-issuer: letsencrypt-prod
+      # https://docs.konghq.com/kubernetes-ingress-controller/latest/guides/configuring-https-redirect/#setup-https-redirect
+#      konghq.com/protocols: "https"
+#      konghq.com/https-redirect-status-code: "301"
+    path: /
+  externalIPs: []
+
+postgresql:
+  enabled: true
+  postgresqlUsername: kong
+  postgresqlDatabase: kong
+  postgresqlPassword: kong
+
+ingressController:
+  enabled: true
+  installCRDs: false
+  env:
+   kong_admin_token:
+     valueFrom:
+       secretKeyRef:
+          name: kong-enterprise-superuser-password
+          key: password
+
+serviceMonitor:
+  enabled: true
+
+status:
+  enabled: true
+
