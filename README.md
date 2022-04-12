@@ -26,8 +26,8 @@ appId    = "******"
 password = "******"
 ```
 
-4. Via the CLI, login to AWS using `aws configure`.
-5. Via the CLI, `cd tf-provision-eks/` then run the following Terraform commands to provisions AKS:
+4. Search and replace 'simongreen' for a unique tag in the `/tf-provision-aks/aks-cluster.tf` file.
+5. Via the CLI, `cd tf-provision-aks/` then run the following Terraform commands to provisions AKS:
 
 ```bash
 terraform init
@@ -70,21 +70,19 @@ It is best to do a search on CHANGE-ME.com and replace all occurances with your 
 
 3. Create RBAC user:
 
-`kubectl create secret generic kong-enterprise-superuser-password \
--n kong \
---from-literal=password=kong`
+`kubectl create secret generic kong-enterprise-superuser-password -n kong --from-literal=password=kong`
 
 4. Create session configurations, Make sure to change "cookie_domain" in each:
 
-`echo '{"cookie_name":"admin_session","cookie_domain": ".CHANGE-ME.com","cookie_samesite":"off","secret":"password","cookie_secure":false,"storage":"kong"}' > admin_gui_session_conf`
-`echo '{"cookie_name":"portal_session","cookie_domain": ".CHANGE-ME.com","cookie_samesite":"off","secret":"password","cookie_secure":false,"storage":"kong"}' > portal_session_conf`
+```bash
+echo '{"cookie_name":"admin_session","cookie_domain": ".CHANGE-ME.com","cookie_samesite":"off","secret":"password","cookie_secure":false,"storage":"kong"}' > admin_gui_session_conf`
+
+echo '{"cookie_name":"portal_session","cookie_domain": ".CHANGE-ME.com","cookie_samesite":"off","secret":"password","cookie_secure":false,"storage":"kong"}' > portal_session_conf
+```
 
 Using the following command to create the secrets
 
-`kubectl create secret generic kong-session-config \
-   -n kong \
-   --from-file=admin_gui_session_conf \
-   --from-file=portal_session_conf`
+`kubectl create secret generic kong-session-config -n kong --from-file=admin_gui_session_conf --from-file=portal_session_conf`
 
 5. Remove files:
 
