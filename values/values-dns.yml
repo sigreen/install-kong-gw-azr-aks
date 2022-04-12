@@ -3,6 +3,8 @@ image:
   tag: "2.7.0.0-alpine"
 
 env:
+  # telemetry off
+  anonymous_reports: off
   database: postgres
   admin_api_uri: http://kong-admin.CHANGEME.com
   admin_gui_url: http://kong-manager.CHANGEME.com
