@@ -75,7 +75,7 @@ It is best to do a search on CHANGE-ME.com and replace all occurances with your 
 4. Create session configurations, Make sure to change "cookie_domain" in each:
 
 ```bash
-echo '{"cookie_name":"admin_session","cookie_domain": ".CHANGE-ME.com","cookie_samesite":"off","secret":"password","cookie_secure":false,"storage":"kong"}' > admin_gui_session_conf`
+echo '{"cookie_name":"admin_session","cookie_domain": ".CHANGE-ME.com","cookie_samesite":"off","secret":"password","cookie_secure":false,"storage":"kong"}' > admin_gui_session_conf
 
 echo '{"cookie_name":"portal_session","cookie_domain": ".CHANGE-ME.com","cookie_samesite":"off","secret":"password","cookie_secure":false,"storage":"kong"}' > portal_session_conf
 ```
