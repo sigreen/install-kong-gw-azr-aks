@@ -1,6 +1,6 @@
 image:
   repository: kong/kong-gateway
-  tag: "2.7.0.0-alpine"
+  tag: "2.8.1.0-alpine"
 
 env:
   # telemetry off
@@ -176,4 +176,3 @@ serviceMonitor:
 
 status:
   enabled: true
-

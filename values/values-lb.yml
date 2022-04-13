@@ -1,0 +1,173 @@
+image:
+  repository: kong/kong-gateway
+  tag: "2.8.1.0-alpine"
+
+env:
+  # telemetry off
+  anonymous_reports: off
+  database: postgres
+  admin_api_uri: http://kong-admin.CHANGEME.com
+  admin_gui_url: http://kong-manager.CHANGEME.com
+  portal_api_url: http://kong-portal-api.CHANGEME.com
+  portal_gui_host: kong-portal.CHANGEME.com
+  portal_gui_protocol: http
+  ## Information needed for sessions (RBAC in Manager and/or Dev Portal session)
+  portal_session_conf:
+    valueFrom:
+      secretKeyRef:
+        name: kong-session-config
+        key: portal_session_conf
+  password:
+   valueFrom:
+     secretKeyRef:
+        name: kong-enterprise-superuser-password
+        key: password
+  log_level: debug
+  pg_user: kong
+  pg_database: kong
+  pg_port: 5432
+  pg_password: kong
+  
+admin:
+  annotations: {}
+  enabled: true
+  http:
+    containerPort: 8001
+    enabled: true
+    parameters: []
+    servicePort: 8001
+  ingress:
+    annotations: {}
+    enabled: false
+    hostname: null
+    path: /
+  tls:
+    containerPort: 8444
+    enabled: true
+    parameters:
+    - http2
+    servicePort: 8444
+  type: LoadBalancer
+
+proxy:
+  enabled: true
+  type: LoadBalancer
+  annotations: []
+  http:
+    enabled: true
+    servicePort: 80
+    containerPort: 8000
+    parameters: []
+  tls:
+    enabled: true
+    servicePort: 443
+    containerPort: 8443
+    parameters: []
+  stream: {}
+  ingress:
+    enabled: false
+    annotations: {}
+    path: /
+  externalIPs: []
+
+enterprise:
+  enabled: true
+  license_secret: kong-enterprise-license
+  vitals:
+    enabled: true
+  portal:
+    enabled: true
+  rbac:
+    enabled: true
+    admin_gui_auth: basic-auth
+    session_conf_secret: kong-session-config
+    admin_gui_auth_conf_secret: admin_gui_session_conf
+  smtp:
+    enabled: false
+
+manager:
+  annotations: {}
+  enabled: true
+  externalIPs: []
+  http:
+    containerPort: 8002
+    enabled: true
+    parameters: []
+    servicePort: 8002
+  ingress:
+    annotations: {}
+    enabled: false
+    hostname: null
+    path: /
+  tls:
+    containerPort: 8445
+    enabled: true
+    parameters:
+    - http2
+    servicePort: 8445
+  type: LoadBalancer
+
+portal:
+  annotations: {}
+  enabled: true
+  externalIPs: []
+  http:
+    containerPort: 8003
+    enabled: true
+    parameters: []
+    servicePort: 8003
+  ingress:
+    annotations: {}
+    enabled: false
+    hostname: null
+    path: /
+  tls:
+    containerPort: 8446
+    enabled: true
+    parameters:
+    - http2
+    servicePort: 8446
+  type: LoadBalancer
+portalapi:
+  annotations: {}
+  enabled: true
+  externalIPs: []
+  http:
+    containerPort: 8004
+    enabled: true
+    parameters: []
+    servicePort: 8004
+  ingress:
+    annotations: {}
+    enabled: false
+    hostname: null
+    path: /
+  tls:
+    containerPort: 8447
+    enabled: true
+    parameters:
+    - http2
+    servicePort: 8447
+  type: LoadBalancer
+
+postgresql:
+  enabled: true
+  postgresqlUsername: kong
+  postgresqlDatabase: kong
+  postgresqlPassword: kong
+
+ingressController:
+  enabled: true
+  installCRDs: false
+  env:
+    kong_admin_token:
+      valueFrom:
+        secretKeyRef:
+          name: kong-enterprise-superuser-password
+          key: password
+
+serviceMonitor:
+  enabled: true
+
+status:
+  enabled: true
