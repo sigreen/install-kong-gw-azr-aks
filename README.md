@@ -44,10 +44,9 @@ kubectl get all
 ## Install Kong
 
 1. Update license under ./license/license of this directory.
-2. Update the following in values-dns.yaml file. I used an existing DNS record found via the Azure web interface, and created an Alias record set on the public IP that gets created through this process.
+2. Update the following in values-dns.yaml or values-lb.yml file. For DNS, I used an existing DNS record found via the Azure web interface, and created an Alias record set on the public IP that gets created through this process.
 
 ![](images/create-record-set.png "create-record-set")
-
 
 Change with your hostname:
 
@@ -56,7 +55,7 @@ Change with your hostname:
 - Portal API: https://kong-portal-api.CHANGE-ME.com
 - Portal: kong-portal.CHANGE-ME.com
 
-It is best to do a search on CHANGE-ME.com and replace all occurances with your DNS name
+It is best to do a search on CHANGE-ME.com and replace all occurrences with your DNS name
 
 ### Install
 
@@ -96,7 +95,7 @@ and
 
 `helm repo update`
 
-7. Install kong:
+7. Option 1: Install kong with DNS and KIC:
 
 `helm install kong kong/kong -n kong --values ./values/values-dns.yml`
 
@@ -104,11 +103,19 @@ if you wanted to upgrade:
 
 `helm upgrade kong kong/kong -n kong --values ./values/values-dns.yml`
 
-8. Monitor:
+8. Option 2: Install kong using Azure NLB and no KIC:
+
+`helm install kong kong/kong -n kong --values ./values/values-nlb.yml`
+
+if you wanted to upgrade:
+
+`helm upgrade kong kong/kong -n kong --values ./values/values-nlb.yml`
+
+9. Monitor:
 
 `kubectl get po -n kong -w `
 
-### Post install:
+### Option 1: DNS Post install:
 
 1. Run `kubectl get ing -n kong`, it will return:
 
@@ -120,3 +127,29 @@ kong-kong-portalapi   <none>   kong-portal-api.kong-changeme.kong-sales-engineer
 ```
 
 2. Update DNS in provider pointing to load balancer IP in your cloud account
+
+### Option 2: NLB Post install:
+
+1. Check services:
+
+`kubectl get svc -n kong -w`
+
+2. You should have somethign similiar to:
+
+```kong-kong-admin            LoadBalancer   10.11.244.9     35.238.46.234    8001:32270/TCP,8444:30125/TCP   3m3s
+kong-kong-manager          LoadBalancer   10.11.241.44    34.71.241.10     8002:32319/TCP,8445:30608/TCP   3m3s
+kong-kong-portal           LoadBalancer   10.11.241.141   35.222.124.219   8003:31487/TCP,8446:30767/TCP   3m3s
+kong-kong-portalapi        LoadBalancer   10.11.246.45    35.239.109.87    8004:30957/TCP,8447:32316/TCP   3m3s
+kong-kong-proxy            LoadBalancer   10.11.254.230   35.239.109.90        80:31209/TCP,443:32489/TCP      3m3s
+```
+
+3. Let's make sure we can call all these endpoints:
+
+- curl 35.238.46.234:8001
+- Got to http://34.71.241.10:8002/overview
+- curl 35.222.124.219:8003
+- curl 35.239.109.87:8004
+
+4. Via the Azure UI, update each static IP (found in the resource groups) and add a suitable DNS label e.g. `kong-admin` matching 35.238.46.234 for example.
+
+***
