@@ -6,10 +6,10 @@ env:
   # telemetry off
   anonymous_reports: off
   database: postgres
-  admin_api_uri: http://kong-admin.CHANGEME.com
-  admin_gui_url: http://kong-manager.CHANGEME.com
-  portal_api_url: http://kong-portal-api.CHANGEME.com
-  portal_gui_host: kong-portal.CHANGEME.com
+  admin_api_uri: http://kong-admin.CHANGEME.com:8001
+  admin_gui_url: http://kong-manager.CHANGEME.com:8002
+  portal_api_url: http://kong-portal-api.CHANGEME.com:8004
+  portal_gui_host: kong-portal.CHANGEME.com:8003
   portal_gui_protocol: http
   ## Information needed for sessions (RBAC in Manager and/or Dev Portal session)
   portal_session_conf:
