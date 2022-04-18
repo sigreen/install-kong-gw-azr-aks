@@ -6,10 +6,10 @@ env:
   # telemetry off
   anonymous_reports: off
   database: postgres
-  admin_api_uri: http://kong-admin.CHANGEME.com:8001
-  admin_gui_url: http://kong-manager.CHANGEME.com:8002
-  portal_api_url: http://kong-portal-api.CHANGEME.com:8004
-  portal_gui_host: kong-portal.CHANGEME.com:8003
+  admin_api_uri: http://kong-admin-sg.CHANGEME.com:8001
+  admin_gui_url: http://kong-manager-sg.CHANGEME.com:8002
+  portal_api_url: http://kong-portal-api-sg.CHANGEME.com:8004
+  portal_gui_host: kong-portal-sg.westus2.CHANGEME.com:8003
   portal_gui_protocol: http
   ## Information needed for sessions (RBAC in Manager and/or Dev Portal session)
   portal_session_conf:
@@ -29,7 +29,8 @@ env:
   pg_password: kong
   
 admin:
-  annotations: {}
+  annotations: 
+    service.beta.kubernetes.io/azure-dns-label-name: kong-admin-sg
   enabled: true
   http:
     containerPort: 8001
@@ -52,7 +53,8 @@ admin:
 proxy:
   enabled: true
   type: LoadBalancer
-  annotations: []
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: kong-proxy-sg
   http:
     enabled: true
     servicePort: 80
@@ -86,7 +88,8 @@ enterprise:
     enabled: false
 
 manager:
-  annotations: {}
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: kong-manager-sg
   enabled: true
   externalIPs: []
   http:
@@ -108,7 +111,8 @@ manager:
   type: LoadBalancer
 
 portal:
-  annotations: {}
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: kong-portal-sg
   enabled: true
   externalIPs: []
   http:
@@ -129,7 +133,8 @@ portal:
     servicePort: 8446
   type: LoadBalancer
 portalapi:
-  annotations: {}
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: kong-portal-api-sg
   enabled: true
   externalIPs: []
   http:
