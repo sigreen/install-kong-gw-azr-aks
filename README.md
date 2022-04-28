@@ -48,12 +48,19 @@ kubectl get all
 
 ![](images/create-record-set.png "create-record-set")
 
-Change with your hostname:
+For DNS, change with your hostname:
 
 - Admin: https://kong-admin.CHANGE-ME.com
 - Manager: https://kong-manager.CHANGE-ME.com
 - Portal API: https://kong-portal-api.CHANGE-ME.com
 - Portal: kong-portal.CHANGE-ME.com
+
+For LB, change with your hostname but make sure you preserve the port number:
+
+- Admin: https://kong-admin.CHANGE-ME.com:8001
+- Manager: https://kong-manager.CHANGE-ME.com:8002
+- Portal API: https://kong-portal-api.CHANGE-ME.com:8004
+- Portal: kong-portal.CHANGE-ME.com:8003
 
 It is best to do a search on CHANGE-ME.com and replace all occurrences with your DNS name
 
@@ -123,7 +130,7 @@ Once the helm chart is installed, manually install the KIC ingress rule in the `
 
 `kubectl apply -f values/kong-admin-ingress.yaml -n kong`
 
-9. Monitor:
+10. Monitor:
 
 `kubectl get po -n kong -w `
 
