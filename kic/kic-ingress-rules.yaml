@@ -1,0 +1,59 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kic-ingress-rules
+  annotations:
+    konghq.com/strip-path: "true"
+spec:
+  ingressClassName: kong
+  rules:
+  - host: simon-nginx.westus2.cloudapp.azure.com
+    http:
+      paths:
+      - path: /admin-api
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: kong-kong-admin
+            port:
+              number: 8001
+  - host: simon-nginx.westus2.cloudapp.azure.com
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: kong-kong-manager
+            port:
+              number: 8002
+  - host: simon-nginx.westus2.cloudapp.azure.com
+    http:
+      paths:
+      - path: /portal
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: kong-kong-portal
+            port:
+              number: 8003
+  - host: simon-nginx.westus2.cloudapp.azure.com
+    http:
+      paths:
+      - path: /portal-api
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: kong-kong-portalapi
+            port:
+              number: 8004
+  - host: simon-nginx.westus2.cloudapp.azure.com
+    http:
+      paths:
+      - path: /proxy
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: kong-kong-proxy
+            port:
+              number: 80

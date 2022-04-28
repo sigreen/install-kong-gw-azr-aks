@@ -6,11 +6,13 @@ env:
   # telemetry off
   anonymous_reports: off
   database: postgres
-  admin_api_uri: http://kong-admin-sg.CHANGEME.com:8001
-  admin_gui_url: http://kong-manager-sg.CHANGEME.com:8002
-  portal_api_url: http://kong-portal-api-sg.CHANGEME.com:8004
-  portal_gui_host: kong-portal-sg.westus2.CHANGEME.com:8003
+  admin_api_uri: http://simon-nginx.westus2.cloudapp.azure.com/admin-api
+  admin_gui_url: http://simon-nginx.westus2.cloudapp.azure.com
+  portal_api_url: http://simon-nginx.westus2.cloudapp.azure.com/portal-api
+  portal_gui_host: simon-nginx.westus2.cloudapp.azure.com/portal
+  proxy_url: http://simon-nginx.westus2.cloudapp.azure.com/proxy
   portal_gui_protocol: http
+
   ## Information needed for sessions (RBAC in Manager and/or Dev Portal session)
   portal_session_conf:
     valueFrom:
@@ -29,8 +31,7 @@ env:
   pg_password: kong
   
 admin:
-  annotations: 
-    service.beta.kubernetes.io/azure-dns-label-name: kong-admin-sg
+  annotations: {}
   enabled: true
   http:
     containerPort: 8001
@@ -44,32 +45,36 @@ admin:
     path: /
   tls:
     containerPort: 8444
-    enabled: true
+    enabled: false
     parameters:
     - http2
     servicePort: 8444
-  type: LoadBalancer
+  type: ClusterIP
 
 proxy:
   enabled: true
   type: LoadBalancer
-  annotations:
-    service.beta.kubernetes.io/azure-dns-label-name: kong-proxy-sg
+  annotations: {
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  }  
   http:
     enabled: true
     servicePort: 80
     containerPort: 8000
     parameters: []
   tls:
-    enabled: true
+    enabled: false
     servicePort: 443
     containerPort: 8443
     parameters: []
   stream: {}
   ingress:
-    enabled: false
-    annotations: {}
-    path: /
+    enabled: true
+    hostname: simon-nginx.westus2.cloudapp.azure.com
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      path: /
   externalIPs: []
 
 enterprise:
@@ -88,8 +93,7 @@ enterprise:
     enabled: false
 
 manager:
-  annotations:
-    service.beta.kubernetes.io/azure-dns-label-name: kong-manager-sg
+  annotations: {}
   enabled: true
   externalIPs: []
   http:
@@ -104,15 +108,14 @@ manager:
     path: /
   tls:
     containerPort: 8445
-    enabled: true
+    enabled: false
     parameters:
     - http2
     servicePort: 8445
-  type: LoadBalancer
+  type: ClusterIP
 
 portal:
-  annotations:
-    service.beta.kubernetes.io/azure-dns-label-name: kong-portal-sg
+  annotations: {}
   enabled: true
   externalIPs: []
   http:
@@ -127,14 +130,14 @@ portal:
     path: /
   tls:
     containerPort: 8446
-    enabled: true
+    enabled: false
     parameters:
     - http2
     servicePort: 8446
-  type: LoadBalancer
+  type: ClusterIP
+  
 portalapi:
-  annotations:
-    service.beta.kubernetes.io/azure-dns-label-name: kong-portal-api-sg
+  annotations: {}
   enabled: true
   externalIPs: []
   http:
@@ -149,11 +152,11 @@ portalapi:
     path: /
   tls:
     containerPort: 8447
-    enabled: true
+    enabled: false
     parameters:
     - http2
     servicePort: 8447
-  type: LoadBalancer
+  type: ClusterIP
 
 postgresql:
   enabled: true
@@ -164,7 +167,7 @@ postgresql:
     username: kong
     password: kong
     database: kong
-    
+
 ingressController:
   enabled: true
   installCRDs: false

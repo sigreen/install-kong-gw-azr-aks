@@ -160,6 +160,10 @@ postgresql:
   postgresqlUsername: kong
   postgresqlDatabase: kong
   postgresqlPassword: kong
+  auth:
+    username: kong
+    password: kong
+    database: kong
 
 ingressController:
   enabled: true

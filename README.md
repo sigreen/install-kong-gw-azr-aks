@@ -105,11 +105,23 @@ if you wanted to upgrade:
 
 8. Option 2: Install kong using Azure NLB and no KIC:
 
-`helm install kong kong/kong -n kong --values ./values/values-nlb.yml`
+`helm install kong kong/kong -n kong --values ./values/values-lb.yml`
 
 if you wanted to upgrade:
 
-`helm upgrade kong kong/kong -n kong --values ./values/values-nlb.yml`
+`helm upgrade kong kong/kong -n kong --values ./values/values-lb.yml`
+
+9. Option 3: Install kong using Nginx ingress controller and KIC, using a single domain:
+
+`helm install kong kong/kong -n kong --values ./values/values-single-domain.yml`
+
+if you wanted to upgrade:
+
+`helm upgrade kong kong/kong -n kong --values ./values/values-single-domain.yml`
+
+Once the helm chart is installed, manually install the KIC ingress rule in the `kong` namespace:
+
+`kubectl apply -f values/kong-admin-ingress.yaml -n kong`
 
 9. Monitor:
 
