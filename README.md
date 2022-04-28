@@ -118,7 +118,19 @@ if you wanted to upgrade:
 
 `helm upgrade kong kong/kong -n kong --values ./values/values-lb.yml`
 
-9. Monitor:
+9. Option 3: Install kong using Nginx ingress controller and KIC, using a single domain:
+
+`helm install kong kong/kong -n kong --values ./values/values-single-domain.yml`
+
+if you wanted to upgrade:
+
+`helm upgrade kong kong/kong -n kong --values ./values/values-single-domain.yml`
+
+Once the helm chart is installed, manually install the KIC ingress rule in the `kong` namespace:
+
+`kubectl apply -f values/kong-admin-ingress.yaml -n kong`
+
+10. Monitor:
 
 `kubectl get po -n kong -w `
 
