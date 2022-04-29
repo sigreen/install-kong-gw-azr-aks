@@ -128,7 +128,7 @@ if you wanted to upgrade:
 
 Once the helm chart is installed, manually install the KIC ingress rule in the `kong` namespace:
 
-`kubectl apply -f values/kong-admin-ingress.yaml -n kong`
+`kubectl apply -f kic/kong-ingress-rules.yaml -n kong`
 
 10. Monitor:
 

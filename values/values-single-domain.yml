@@ -53,10 +53,8 @@ admin:
 
 proxy:
   enabled: true
-  type: LoadBalancer
-  annotations: {
-    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-  }  
+  type: ClusterIP
+  annotations: {}
   http:
     enabled: true
     servicePort: 80
